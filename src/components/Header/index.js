@@ -1,7 +1,7 @@
 import {
   HeaderContainer,
   GameNamesListContainer,
-  List,
+  Heading,
   ScoreContainer,
   ScoreText,
   ScoreValue,
@@ -13,9 +13,9 @@ const Header = props => {
   return (
     <HeaderContainer>
       <GameNamesListContainer>
-        <List>ROCK</List>
-        <List>PAPER</List>
-        <List>SCISSORS</List>
+        <Heading>ROCK</Heading>
+        <Heading>PAPER</Heading>
+        <Heading>SCISSORS</Heading>
       </GameNamesListContainer>
       <ScoreContainer>
         <ScoreText>Score</ScoreText>
