@@ -35,70 +35,82 @@ class RockGame extends Component {
     score: 0,
     isPlayingView: true,
     myChoiceImageId: '',
+    randomChoiceImageId: '',
+    gameResult: '',
   }
 
   onClickPlayAgain = () => this.setState({isPlayingView: true})
 
-  getRandomImageId = () => {
-    const {choicesList} = this.props
-    const lengthOfList = choicesList.length
-
-    const randomImageId = choicesList[Math.floor(Math.random() * lengthOfList)]
-
-    return randomImageId
-  }
-
-  getWinningLabelText = (myChoiceImageId, opponentImageId) => {
+  getResultLabel = (myChoiceImageId, randomGeneratedImageId) => {
     let labelEl = ''
-
-    if (myChoiceImageId === 'ROCK' && opponentImageId === 'SCISSORS') {
-      labelEl = 'You Won'
-    } else if (myChoiceImageId === 'PAPER' && opponentImageId === 'ROCK') {
-      labelEl = 'You Won'
-    } else if (myChoiceImageId === 'SCISSORS' && opponentImageId === 'PAPER') {
-      labelEl = 'You Won'
-    } else if (myChoiceImageId === 'ROCK' && opponentImageId === 'PAPER') {
-      labelEl = 'You Lose'
-    } else if (myChoiceImageId === 'SCISSORS' && opponentImageId === 'ROCK') {
-      labelEl = 'You Lose'
-    } else if (myChoiceImageId === 'PAPER' && opponentImageId === 'SCISSORS') {
-      labelEl = 'You Lose'
+    if (myChoiceImageId === 'ROCK' && randomGeneratedImageId === 'SCISSORS') {
+      labelEl = 'YOU WON'
+    } else if (
+      myChoiceImageId === 'PAPER' &&
+      randomGeneratedImageId === 'ROCK'
+    ) {
+      labelEl = 'YOU WON'
+    } else if (
+      myChoiceImageId === 'SCISSORS' &&
+      randomGeneratedImageId === 'PAPER'
+    ) {
+      labelEl = 'YOU WON'
+    } else if (
+      myChoiceImageId === 'ROCK' &&
+      randomGeneratedImageId === 'PAPER'
+    ) {
+      labelEl = 'YOU LOSE'
+    } else if (
+      myChoiceImageId === 'SCISSORS' &&
+      randomGeneratedImageId === 'ROCK'
+    ) {
+      labelEl = 'YOU LOSE'
+    } else if (
+      myChoiceImageId === 'PAPER' &&
+      randomGeneratedImageId === 'SCISSORS'
+    ) {
+      labelEl = 'YOU LOSE'
     } else {
       labelEl = 'IT IS DRAW'
     }
-
     return labelEl
   }
 
-  getYourChoiceImageUrl = myChoiceImageId => {
-    const {choicesList} = this.props
-    const yourChoice = choicesList.find(each => each.id === myChoiceImageId)
-    const {imageUrl} = yourChoice
-    return imageUrl
+  getScore = () => {
+    const {gameResult} = this.state
+
+    if (gameResult === 'YOU WON') {
+      this.setState(prevState => ({score: prevState + 1}))
+    } else if (gameResult === 'YOU LOSE') {
+      this.setState(prevState => ({score: prevState - 1}))
+    } else {
+      this.setState(prevState => ({score: prevState}))
+    }
+  }
+
+  getRandomChoiceImageUrl = randomChoice => {
+    const {imageUrl} = randomChoice
+    const opponentChoiceImageUrl = imageUrl
+    return opponentChoiceImageUrl
   }
 
   renderGameResultView = () => {
-    const {myChoiceImageId} = this.state
-    const yourChoiceImageUrl = this.getYourChoiceImageUrl(myChoiceImageId)
-    const opponentId = this.getRandomImageId()
-    const {id, imageUrl} = opponentId
-    const opponentImageId = id
-    // console.log(id)
+    const {choicesList} = this.props
+    const {myChoiceImageId, randomChoiceImageId, gameResult} = this.state
+    console.log(myChoiceImageId)
+    console.log(randomChoiceImageId)
 
-    // console.log(imageUrl)
+    const myChoice = choicesList.find(each => each.id === myChoiceImageId)
+    const {imageUrl} = myChoice
+    const yourChoiceImageUrl = imageUrl
+    // console.log(yourChoiceImageUrl)
 
-    const winningLabelText = this.getWinningLabelText(
-      myChoiceImageId,
-      opponentImageId,
+    const randomChoice = choicesList.find(
+      each => each.id === randomChoiceImageId,
     )
 
-    if (winningLabelText === 'You Won') {
-      this.setState(prevState => ({score: prevState.score + 1}))
-    } else if (winningLabelText === 'You Lose') {
-      this.setState(prevState => ({score: prevState.score - 1}))
-    } else {
-      this.setState(prevState => ({score: prevState.score}))
-    }
+    const opponentChoiceImageUrl = this.getRandomChoiceImageUrl(randomChoice)
+    //  console.log(opponentChoiceImageUrl)
 
     return (
       <GameResultContainer>
@@ -110,12 +122,15 @@ class RockGame extends Component {
 
           <RandomChoiceContainer>
             <OpponentChoiceHeading>OPPONENT</OpponentChoiceHeading>
-            <RandomChoiceImage src={imageUrl} alt="opponent choice" />
+            <RandomChoiceImage
+              src={opponentChoiceImageUrl}
+              alt="opponent choice"
+            />
           </RandomChoiceContainer>
         </ImagesContainer>
 
         <LabelAndButtonContainer>
-          <LabelText>{winningLabelText}</LabelText>
+          <LabelText>{gameResult}</LabelText>
           <PlayAgainButton
             type="button"
             test-id=""
@@ -129,7 +144,21 @@ class RockGame extends Component {
   }
 
   changeMyChoiceImageId = id => {
-    this.setState({myChoiceImageId: id, isPlayingView: false})
+    const {choicesList} = this.props
+
+    const lengthOfList = choicesList.length
+
+    const randomId = choicesList[Math.floor(Math.random() * lengthOfList)]
+    const randomGeneratedImageId = randomId.id
+
+    const result = this.getResultLabel(id, randomGeneratedImageId)
+
+    this.setState({
+      randomChoiceImageId: randomGeneratedImageId,
+      gameResult: result,
+      myChoiceImageId: id,
+      isPlayingView: false,
+    })
   }
 
   renderPlayingView = () => {
@@ -143,6 +172,7 @@ class RockGame extends Component {
               key={each.id}
               gameItemDetails={each}
               changeMyChoiceImageId={this.changeMyChoiceImageId}
+              getScore={this.getScore}
             />
           ))}
         </PlayingListContainer>
@@ -152,6 +182,7 @@ class RockGame extends Component {
 
   render() {
     const {isPlayingView, score} = this.state
+
     return (
       <RockContainer>
         <RockBodyContainer>
