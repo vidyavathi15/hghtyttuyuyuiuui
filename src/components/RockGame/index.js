@@ -83,9 +83,9 @@ class RockGame extends Component {
     const {gameResult} = this.state
 
     if (gameResult === 'YOU WON') {
-      this.setState(prevState => ({score: prevState + 1}))
+      this.setState(prevState => ({score: prevState.score + 1}))
     } else if (gameResult === 'YOU LOSE') {
-      this.setState(prevState => ({score: prevState - 1}))
+      this.setState(prevState => ({score: prevState.score - 1}))
     }
   }
 
@@ -162,7 +162,7 @@ class RockGame extends Component {
         isPlayingView: false,
       },
 
-      this.getScor,
+      this.getScore,
     )
   }
 
