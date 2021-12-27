@@ -41,7 +41,7 @@ export const ScoreText = styled.p`
   color: #223a5f;
   font-size: 10px;
   font-weight: 800;
-
+  font-family: 'Bree Serif';
   @media screen and (min-width: 768px) {
     font-size: 25px;
   }
@@ -50,6 +50,7 @@ export const ScoreValue = styled.p`
   color: #223a5f;
   font-size: 10px;
   font-weight: 800;
+  font-family: 'Roboto';
 
   @media screen and (min-width: 768px) {
     font-size: 25px;

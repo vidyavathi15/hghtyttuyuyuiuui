@@ -39,7 +39,10 @@ class RockGame extends Component {
     gameResult: '',
   }
 
-  onClickPlayAgain = () => this.setState({isPlayingView: true})
+  onClickPlayAgain = () => {
+    const {score} = this.state
+    this.setState({isPlayingView: true, score})
+  }
 
   getResultLabel = (myChoiceImageId, randomGeneratedImageId) => {
     let labelEl = ''
@@ -83,8 +86,6 @@ class RockGame extends Component {
       this.setState(prevState => ({score: prevState + 1}))
     } else if (gameResult === 'YOU LOSE') {
       this.setState(prevState => ({score: prevState - 1}))
-    } else {
-      this.setState(prevState => ({score: prevState}))
     }
   }
 
@@ -97,8 +98,8 @@ class RockGame extends Component {
   renderGameResultView = () => {
     const {choicesList} = this.props
     const {myChoiceImageId, randomChoiceImageId, gameResult} = this.state
-    console.log(myChoiceImageId)
-    console.log(randomChoiceImageId)
+    // console.log(myChoiceImageId)
+    // console.log(randomChoiceImageId)
 
     const myChoice = choicesList.find(each => each.id === myChoiceImageId)
     const {imageUrl} = myChoice
@@ -153,12 +154,16 @@ class RockGame extends Component {
 
     const result = this.getResultLabel(id, randomGeneratedImageId)
 
-    this.setState({
-      randomChoiceImageId: randomGeneratedImageId,
-      gameResult: result,
-      myChoiceImageId: id,
-      isPlayingView: false,
-    })
+    this.setState(
+      {
+        randomChoiceImageId: randomGeneratedImageId,
+        gameResult: result,
+        myChoiceImageId: id,
+        isPlayingView: false,
+      },
+
+      this.getScor,
+    )
   }
 
   renderPlayingView = () => {
@@ -182,6 +187,7 @@ class RockGame extends Component {
 
   render() {
     const {isPlayingView, score} = this.state
+    console.log(score)
 
     return (
       <RockContainer>
